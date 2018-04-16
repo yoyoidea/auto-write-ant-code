@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Django",
+            "type": "pythonExperimental",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/manage.py",
+            "args": [
+                "runserver",
+                "--noreload",
+                "--nothreading"
+            ],
+            "debugOptions": [
+                "RedirectOutput",
+                "Django"
+            ]
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
