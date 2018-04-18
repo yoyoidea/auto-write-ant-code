@@ -76,7 +76,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['form'], () => import('../routes/Forms/BasicForm')),
     },
     '/list': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
+      component: dynamicWrapper(app, ['list'], () => import('../routes/List/TableList')),
     },
     '/profile': {
       component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/BasicProfile')),

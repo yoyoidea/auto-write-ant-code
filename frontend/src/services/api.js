@@ -56,8 +56,11 @@ export async function queryAdvancedProfile() {
   return request('/api/profile/advanced');
 }
 
-export async function queryFakeList(params) {
-  return request(`/api/fake_list?${stringify(params)}`);
+export async function queryList(params) {
+  return request('/api/write/list', {
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function fakeAccountLogin(params) {
