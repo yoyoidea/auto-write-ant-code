@@ -1,5 +1,12 @@
-from django.http import HttpResponse
+import json
+
+from django.http import JsonResponse
+from django.views import View
+
+from write_code.services import write_list_page
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+class ListView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        return JsonResponse(write_list_page(data))

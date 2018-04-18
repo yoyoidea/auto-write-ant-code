@@ -1,6 +1,3 @@
-import json
-
-
 class format_dict(dict):
     def __missing__(self, key):
         return ""
