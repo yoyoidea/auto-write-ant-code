@@ -18,23 +18,23 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { getAuthority } from '../../utils/authority';
 import styles from './style/DatabaseList.less';
 
-@connect(({ %(modelName)s, loading }) => ({
-  %(modelName)s,
-  loading: loading.models.%(modelName)s,
+@connect(({ database, loading }) => ({
+  database,
+  loading: loading.models.database,
 }))
 
 @Form.create()
 export default class DatabaseList extends PureComponent {
   constructor(props) {
     super(props);
-    this.columns = %(columns)s;
+    this.columns = [{'title': '名称', 'dataIndex': 'name'}, {'title': '类型', 'dataIndex': 'databaseTypeName'}];
     if (getAuthority() !== 'user') {
       this.columns.push(
         {
           title: '操作',
           render: record => (
             <Fragment>
-              <Link to={`/asset/%(modelName)s/${record.id}/edit`}>编辑</Link>
+              <Link to={`/asset/database/${record.id}/edit`}>编辑</Link>
               <Divider type="vertical" />
               <Popconfirm title="确定删除该项?" onConfirm={() => this.onDelete(record.id)}>
                 <a>删除</a>
@@ -68,7 +68,7 @@ export default class DatabaseList extends PureComponent {
   onDelete = (key) => {
     const { dispatch } = this.props;
     dispatch({
-      type: '%(modelName)s/remove',
+      type: 'database/remove',
       payload: { id: key },
     }).then(() => {
       this.fetch();
@@ -81,13 +81,13 @@ export default class DatabaseList extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       dispatch({
-        type: '%(modelName)s/fetch',
+        type: 'database/fetch',
         payload: {
           ...params,
           ...fieldsValue,
         },
       }).then(() => {
-        let { %(modelName)s: { data } } = this.props;
+        let { database: { data } } = this.props;
         if (data === null) {
           data = this.state.data;
         }
@@ -137,7 +137,13 @@ export default class DatabaseList extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          %(simpleFromCol)s
+          <Col md={8} sm={24}>
+            <Form.Item label="名称">
+              {getFieldDecorator('name')(
+                <Input placeholder="请输入" />
+            )}
+            </Form.Item>
+          </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">查询</Button>
@@ -157,7 +163,13 @@ export default class DatabaseList extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          %(advancedFromCol)s
+          <Col md={8} sm={24}>
+            <Form.Item label="名称">
+              {getFieldDecorator('name')(
+                <Input placeholder="请输入" />
+            )}
+            </Form.Item>
+          </Col>
         </Row>
         <div style={{ overflow: 'hidden' }}>
           <span style={{ float: 'right', marginBottom: 24 }}>
