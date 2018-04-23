@@ -1,25 +1,15 @@
-import { queryBasicProfile, queryAdvancedProfile } from '../services/api';
+import { queryDetail } from '../services/api';
 
 export default {
   namespace: 'profile',
 
   state: {
-    basicGoods: [],
-    advancedOperation1: [],
-    advancedOperation2: [],
-    advancedOperation3: [],
+    list: [],
   },
 
   effects: {
-    *fetchBasic(_, { call, put }) {
-      const response = yield call(queryBasicProfile);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
-    },
-    *fetchAdvanced(_, { call, put }) {
-      const response = yield call(queryAdvancedProfile);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(queryDetail, payload);
       yield put({
         type: 'show',
         payload: response,
@@ -28,10 +18,10 @@ export default {
   },
 
   reducers: {
-    show(state, { payload }) {
+    show(state, action) {
       return {
         ...state,
-        ...payload,
+        list: action.payload,
       };
     },
   },

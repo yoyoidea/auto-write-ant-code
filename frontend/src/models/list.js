@@ -9,7 +9,6 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      console.log("dsadasdas");
       const response = yield call(queryList, payload);
       yield put({
         type: 'queryList',

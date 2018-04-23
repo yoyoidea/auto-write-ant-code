@@ -48,16 +48,15 @@ export async function queryTags() {
   return request('/api/tags');
 }
 
-export async function queryBasicProfile() {
-  return request('/api/profile/basic');
-}
-
-export async function queryAdvancedProfile() {
-  return request('/api/profile/advanced');
-}
-
 export async function queryList(params) {
   return request('/api/write/list', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function queryDetail(params) {
+  return request('/api/write/detail', {
     method: 'POST',
     body: params,
   });
