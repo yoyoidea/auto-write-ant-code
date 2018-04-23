@@ -6,6 +6,8 @@ import {
   Row,
   Col,
   Card,
+  Button,
+  Icon,
 } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -74,10 +76,11 @@ export default class TableList extends PureComponent {
         <Card bordered={false}>
           <Row gutter={8}>
             <Col span={12}>
-              <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} />
+              <CodeMirror value={this.state.code} onChange={this.updateCode} options={options}/>
             </Col>
             <Col span={12}>
-              <CodeMirror value={this.state.value} options={frontendOptions} />
+
+              <CodeMirror value={this.state.value} options={frontendOptions}/>
             </Col>
           </Row>
         </Card>
