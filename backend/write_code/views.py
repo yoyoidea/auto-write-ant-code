@@ -17,3 +17,10 @@ class DetailView(View):
         data = json.loads(request.body)
         print(data)
         return JsonResponse(write_detail_page(data))
+
+
+class AddView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        print(data)
+        return JsonResponse(write_detail_page(data))

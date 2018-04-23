@@ -79,12 +79,44 @@ DescriptionListStr = """
             </DescriptionList>
 """
 
-
 Description = """
               <Description term="%(term)s">{ this.state.data.%(key)s }</Description>"""
 
 
 def write_detail_page(data):
+    format_data = FormatDict(data)
+
+    # 构造simple form 和 advance form
+    form_col = format_data.get("detail")
+
+    init_data = dict()
+    description_list_str = ""
+    if form_col:
+        for col in form_col:
+            description_str = ""
+            for detail in col.get("list"):
+                key = detail.get("key")
+                if key:
+                    init_data[key] = ""
+                description_str += Description % detail
+            # print(description_str)
+            description_str = description_str.lstrip()
+            description_dict = dict()
+            description_dict['description'] = description_str
+            description_dict['title'] = col.get('title')
+            description_list_str += DescriptionListStr % description_dict
+        format_data["initData"] = dict_to_dict_str(init_data)
+        format_data["descriptionList"] = description_list_str.lstrip()
+    print(format_data)
+    with open('media/detail/detail.js') as f:
+        list_content = f.read()
+        page = list_content % format_data
+    with open('media/detail/test.js', 'w') as wf:
+        wf.write(page)
+    return success_response_data(page)
+
+
+def write_add_page(data):
     format_data = FormatDict(data)
 
     # 构造simple form 和 advance form
