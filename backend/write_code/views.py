@@ -23,4 +23,4 @@ class AddView(View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         print(data)
-        return JsonResponse(write_detail_page(data))
+        return JsonResponse(write_add_page(data))

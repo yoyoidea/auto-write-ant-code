@@ -26,13 +26,20 @@ def dict_to_dict_str(data):
     dict_format = '{%(data)s }'
     data_list = list()
     for index, key in enumerate(data):
-        if index != len(data) - 1:
-            data_str_format += " {0[" + str(count) + "]}: '{0[" + str(count + 1) + "]}',"
-        else:
-            data_str_format += " {0[" + str(count) + "]}: '{0[" + str(count + 1) + "]}'"
-        count += 2
         data_list.append(key)
-        data_list.append(data[key])
+        if data[key] is True or data[key] is False:
+            data_list.append(str(data[key]).lower())
+            if index != len(data) - 1:
+                data_str_format += " {0[" + str(count) + "]}: {0[" + str(count + 1) + "]},"
+            else:
+                data_str_format += " {0[" + str(count) + "]}: {0[" + str(count + 1) + "]}"
+        else:
+            data_list.append(data[key])
+            if index != len(data) - 1:
+                data_str_format += " {0[" + str(count) + "]}: '{0[" + str(count + 1) + "]}',"
+            else:
+                data_str_format += " {0[" + str(count) + "]}: '{0[" + str(count + 1) + "]}'"
+        count += 2
     data_str = dict_format % (dict(data=data_str_format.format(data_list)))
     return data_str
 
@@ -116,35 +123,48 @@ def write_detail_page(data):
     return success_response_data(page)
 
 
+FieldsTypeDict = {
+    "Input": '<Input placeholder="%(placeholder)s" />',
+    "TextArea": '<TextArea placeholder="%(placeholder)s" />',
+    "Select": """<Select placeholder="%(placeholder)s" />'
+                    {this.state.%(option)s}
+                 </Select>""",
+    "DatePicker": '<DatePicker placeholder="%(placeholder)s"/>',
+    "InputNumber": '<InputNumber placeholder="%(placeholder)s"/>',
+    "AutoComplete": """<AutoComplete
+                    dataSource=""
+                    placeholder="input here"
+                  />""",
+}
+
+FieldForm = """
+            <FormItem {...formItemLayout} label="%(label)s">
+              {getFieldDecorator('%(name)s', {
+                rules: %(rules)s,
+              })(%(field)s)}
+            </FormItem>
+"""
+
+
 def write_add_page(data):
     format_data = FormatDict(data)
-
-    # 构造simple form 和 advance form
-    form_col = format_data.get("detail")
-
-    init_data = dict()
-    description_list_str = ""
+    form_col = format_data.get("fields")
+    form_item_str = ''
+    import_field_list = list()
     if form_col:
         for col in form_col:
-            description_str = ""
-            for detail in col.get("list"):
-                key = detail.get("key")
-                if key:
-                    init_data[key] = ""
-                description_str += Description % detail
-            # print(description_str)
-            description_str = description_str.lstrip()
-            description_dict = dict()
-            description_dict['description'] = description_str
-            description_dict['title'] = col.get('title')
-            description_dict['title'] = col.get('title')
-            description_list_str += DescriptionListStr % description_dict
-        format_data["initData"] = dict_to_dict_str(init_data)
-        format_data["descriptionList"] = description_list_str.lstrip()
-    print(format_data)
-    with open('media/detail/detail.js') as f:
+            field_type = col.get('type')
+            field = FieldsTypeDict.get(field_type) % col
+            # 统计需要导入的import field
+            import_field_list.append(field_type)
+            col['field'] = field
+            col['rules'] = list_to_list_str(col.get('rules'))
+            form_item_str += FieldForm % col
+    format_data['formItem'] = form_item_str.lstrip()
+    format_data['importFields'] = ", ".join(list(set(import_field_list)))
+    with open('media/form/add.js') as f:
         list_content = f.read()
         page = list_content % format_data
-    with open('media/detail/test.js', 'w') as wf:
+    with open('media/form/test.js', 'w') as wf:
         wf.write(page)
     return success_response_data(page)
